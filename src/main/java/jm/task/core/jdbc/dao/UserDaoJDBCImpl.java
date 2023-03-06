@@ -2,8 +2,7 @@ package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
-
-import java.sql.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -16,16 +15,16 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     private static final String CREATE_TABLE = """
-            CREATE TABLE USERS (
-                user_id integer generated as identity primary key,
-                user_name varchar (32) not null,
-                user_lastname varchar (32) not null,
+             CREATE TABLE IF NOT EXISTS USERS (
+                user_id int auto_increment primary key,
+                user_name varchar (32),
+                user_lastname varchar (32),
                 user_age integer check (user_age > 0 AND user_age < 100)
             )
             """;
 
     private static final String DROP_TABLE = """
-            DROP TABLE USERS
+            DROP TABLE IF EXISTS USERS
             """;
 
     private static final String SAVE_USER = """
@@ -46,7 +45,6 @@ public class UserDaoJDBCImpl implements UserDao {
     private static final String CLEAN_ALL_TABLE = """
             TRUNCATE TABLE USERS
             """;
-
 
     public void createUsersTable() {
         try (var connection = Util.openConnection();
